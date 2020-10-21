@@ -12,7 +12,7 @@ from scipy.interpolate import PPoly
 
 psmc = sh.Command(os.environ.get("PSMC_PATH", "psmc"))
 
-__version__ = (
+__psmc__version__ = (
     sh.grep(psmc(_err_to_out=True, _ok_code=1), "Version").strip().split(" ")[1]
 )
 
