@@ -1,12 +1,13 @@
 """Run Li & Durbin's PSMC on genetic variation data stored in a tree sequence."""
-from dataclasses import dataclass
-from typing import List, Tuple, TextIO, Union
-import numpy as np
 import itertools
 import os
-import sh
-import textwrap
 import tempfile
+import textwrap
+from dataclasses import dataclass
+from typing import List, TextIO, Tuple, Union
+
+import numpy as np
+import sh
 from scipy.interpolate import PPoly
 
 psmc = sh.Command(os.environ.get("PSMC_PATH", "psmc"))
@@ -107,12 +108,12 @@ class SizeHistory:
         return SizeHistory(c * self.t, c * self.Ne)
 
     def draw(self, ax=None, diploid=True, **kwargs):
-        'draw this size history.'
+        "draw this size history."
         import matplotlib.pyplot as plt
 
         if ax is None:
             ax = plt.gca()
-        ax.plot(self.t, self.Ne / (1. + diploid), drawstyle="steps-post", **kwargs)
+        ax.plot(self.t, self.Ne / (1.0 + diploid), drawstyle="steps-post", **kwargs)
 
     def to_pp(self):
         return PPoly(x=np.r_[self.t, np.inf], c=[self.Ne])
