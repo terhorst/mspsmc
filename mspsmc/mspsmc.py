@@ -106,12 +106,13 @@ class SizeHistory:
     def rescale(self, c: float) -> "SizeHistory":
         return SizeHistory(c * self.t, c * self.Ne)
 
-    def draw(self, ax=None, **kwargs):
+    def draw(self, ax=None, diploid=True, **kwargs):
+        'draw this size history.'
         import matplotlib.pyplot as plt
 
         if ax is None:
             ax = plt.gca()
-        ax.plot(self.t, self.Ne, drawstyle="steps-post", **kwargs)
+        ax.plot(self.t, self.Ne / (1. + diploid), drawstyle="steps-post", **kwargs)
 
     def to_pp(self):
         return PPoly(x=np.r_[self.t, np.inf], c=[self.Ne])
