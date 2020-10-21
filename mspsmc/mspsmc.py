@@ -140,15 +140,18 @@ class msPSMC:
             for i, (ts, h) in enumerate(self.data):
                 _gen_psmcfa(ts, "contig%d" % i, h, out, self.w)
 
-    def estimate(self, *args, **kwargs) -> PSMCResult:
+    def estimate(self, *args, full=False, **kwargs) -> PSMCResult:
         """Run model for x em iterations."""
         with tempfile.NamedTemporaryFile(suffix=".psmc") as f:
             psmc("-o", f.name, *args, self._fa)
             res = _parse_psmc(open(f.name, "rt"))
-        r = res[-1]
-        return PSMCResult(
-            theta=r["theta"], rho=r["rho"], Ne=SizeHistory(r["t"], r["Ne"])
-        )
+        ret = [
+            PSMCResult(theta=r["theta"], rho=r["rho"], Ne=SizeHistory(r["t"], r["Ne"]))
+            for r in res
+        ]
+        if not full:
+            return ret[-1]
+        return ret
 
     def posterior(self, *args) -> Tuple[np.ndarray, np.ndarray]:
         """Return posterior decoding"""
